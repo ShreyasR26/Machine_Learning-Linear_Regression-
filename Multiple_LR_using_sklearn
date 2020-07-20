@@ -1,0 +1,47 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+import seaborn as sb
+sb.set()
+from sklearn.linear_model import LinearRegression
+from sklearn.feature_selection import f_regression
+
+data=pd.read_csv('C:/Users/admin/Downloads/real_estate_price_size_year.csv')
+print(data)
+print(data.describe())
+
+x=data[{'size','year'}]
+y=data['price']
+
+reg=LinearRegression()
+print(reg.fit(x,y))
+
+print('R_squared: ')
+print(reg.score(x,y))
+print('coefficient:')
+print(reg.coef_)
+print('intercept')
+print(reg.intercept_)
+
+r2=reg.score(x,y)
+n=x.shape[0]
+p=x.shape[1]
+adj_r2=1-((1-r2)*(n-1))/(n-p-1)
+print('Adjusted R_squared: ')
+print(adj_r2)
+
+#Feature Selection
+f_regression(x, y)
+
+p_values=f_regression(x, y)[0]
+print('p_values')
+print(p_values.round(3))
+
+#summary
+reg_summary=pd.DataFrame(data=x.columns.values,columns=['features'])
+
+
+reg_summary['coefficients']=reg.coef_
+reg_summary['P_values']=p_values.round(3)
+print(reg_summary)
